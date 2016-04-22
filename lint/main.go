@@ -25,6 +25,8 @@ func main() {
 	}
 }
 
+var rules = []rule{ruleLines, ruleSpacing, ruleYou, ruleSpell, rulePuncSpace}
+
 func checkPath(path string) {
 	f, err := os.Open(path)
 	if err != nil {
@@ -35,7 +37,11 @@ func checkPath(path string) {
 	go func() {
 		defer close(nch)
 		lch := filterFence(ReadLines(f), nch)
-		chain(chain(chain(ruleLines, ruleSpacing), ruleYou), ruleSpell)(lch, nch)
+		f := rules[0]
+		for _, r := range rules[1:] {
+			f = chain(f, r)
+		}
+		f(lch, nch)
 	}()
 	for n := range nch {
 		fmt.Printf("%s.%d: %s ", n.l.path, n.l.n, n.rule)

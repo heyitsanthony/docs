@@ -63,7 +63,7 @@ func chain(a, b rule) rule {
 }
 
 func rulePuncSpace(lch <-chan *line, nch chan<- nit) {
-	re := regexp.MustCompile("[.,;!\"]  ")
+	re := regexp.MustCompile("[.,;!\":]  ")
 	for l := range lch {
 		if re.MatchString(l.s) {
 			nch <- nit{l: *l, rule: "spacing: punctuation"}
